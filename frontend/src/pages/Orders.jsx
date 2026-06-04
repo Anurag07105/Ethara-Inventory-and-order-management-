@@ -3,6 +3,7 @@ import { Box, Typography, Button, TextField, InputAdornment, MenuItem } from '@m
 import { Search, Add } from '@mui/icons-material';
 import { useOrders, useDeleteOrder, useUpdateOrderStatus } from '../hooks/useOrders';
 import OrderTable from '../components/OrderTable';
+import AddOrderDialog from '../components/AddOrderDialog';
 
 const ORDER_STATUSES = ['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
 
@@ -10,6 +11,7 @@ export default function Orders() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [openAddDialog, setOpenAddDialog] = useState(false);
   
   const params = { page, pageSize: 10, search, status: statusFilter || undefined };
   const { data, isLoading } = useOrders(params);
@@ -32,7 +34,7 @@ export default function Orders() {
         <Typography variant="h4" fontWeight={700} sx={{ letterSpacing: '-0.02em' }}>
           Orders
         </Typography>
-        <Button variant="contained" startIcon={<Add />} sx={{ borderRadius: 2, px: 3, py: 1, textTransform: 'none', fontWeight: 600, boxShadow: 'none', '&:hover': { boxShadow: '0 4px 6px -1px rgb(79 70 229 / 0.4)' } }}>
+        <Button variant="contained" startIcon={<Add />} onClick={() => setOpenAddDialog(true)} sx={{ borderRadius: 2, px: 3, py: 1, textTransform: 'none', fontWeight: 600, boxShadow: 'none', '&:hover': { boxShadow: '0 4px 6px -1px rgb(79 70 229 / 0.4)' } }}>
           New Order
         </Button>
       </Box>
@@ -65,6 +67,7 @@ export default function Orders() {
       </Box>
 
       {isLoading ? <Typography>Loading...</Typography> : <OrderTable orders={data?.data?.items || []} onDelete={handleDelete} onStatusChange={handleStatusChange} />}
+      <AddOrderDialog open={openAddDialog} onClose={() => setOpenAddDialog(false)} />
     </Box>
   );
 }

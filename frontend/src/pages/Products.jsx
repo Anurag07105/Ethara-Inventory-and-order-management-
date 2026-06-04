@@ -3,10 +3,12 @@ import { Box, Typography, Button, TextField, InputAdornment, Paper } from '@mui/
 import { Search, Add } from '@mui/icons-material';
 import { useProducts, useDeleteProduct } from '../hooks/useProducts';
 import ProductTable from '../components/ProductTable';
+import AddProductDialog from '../components/AddProductDialog';
 
 export default function Products() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [openAddDialog, setOpenAddDialog] = useState(false);
   
   const { data, isLoading } = useProducts({ page, pageSize: 10, search });
   const deleteMutation = useDeleteProduct();
@@ -23,7 +25,7 @@ export default function Products() {
         <Typography variant="h4" fontWeight={700} sx={{ letterSpacing: '-0.02em' }}>
           Products
         </Typography>
-        <Button variant="contained" startIcon={<Add />} sx={{ borderRadius: 2, px: 3, py: 1, textTransform: 'none', fontWeight: 600, boxShadow: 'none', '&:hover': { boxShadow: '0 4px 6px -1px rgb(79 70 229 / 0.4)' } }}>
+        <Button variant="contained" startIcon={<Add />} onClick={() => setOpenAddDialog(true)} sx={{ borderRadius: 2, px: 3, py: 1, textTransform: 'none', fontWeight: 600, boxShadow: 'none', '&:hover': { boxShadow: '0 4px 6px -1px rgb(79 70 229 / 0.4)' } }}>
           Add Product
         </Button>
       </Box>
@@ -44,6 +46,7 @@ export default function Products() {
       </Paper>
 
       {isLoading ? <Typography>Loading...</Typography> : <ProductTable products={data?.data?.items || []} onDelete={handleDelete} />}
+      <AddProductDialog open={openAddDialog} onClose={() => setOpenAddDialog(false)} />
     </Box>
   );
 }

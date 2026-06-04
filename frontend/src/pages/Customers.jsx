@@ -3,10 +3,12 @@ import { Box, Typography, Button, TextField, InputAdornment } from '@mui/materia
 import { Search, Add } from '@mui/icons-material';
 import { useCustomers, useDeleteCustomer } from '../hooks/useCustomers';
 import CustomerTable from '../components/CustomerTable';
+import AddCustomerDialog from '../components/AddCustomerDialog';
 
 export default function Customers() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [openAddDialog, setOpenAddDialog] = useState(false);
   
   const { data, isLoading } = useCustomers({ page, pageSize: 10, search });
   const deleteMutation = useDeleteCustomer();
@@ -23,7 +25,7 @@ export default function Customers() {
         <Typography variant="h4" fontWeight={700} sx={{ letterSpacing: '-0.02em' }}>
           Customers
         </Typography>
-        <Button variant="contained" startIcon={<Add />} sx={{ borderRadius: 2, px: 3, py: 1, textTransform: 'none', fontWeight: 600, boxShadow: 'none', '&:hover': { boxShadow: '0 4px 6px -1px rgb(79 70 229 / 0.4)' } }}>
+        <Button variant="contained" startIcon={<Add />} onClick={() => setOpenAddDialog(true)} sx={{ borderRadius: 2, px: 3, py: 1, textTransform: 'none', fontWeight: 600, boxShadow: 'none', '&:hover': { boxShadow: '0 4px 6px -1px rgb(79 70 229 / 0.4)' } }}>
           Add Customer
         </Button>
       </Box>
@@ -44,6 +46,7 @@ export default function Customers() {
       </Box>
 
       {isLoading ? <Typography>Loading...</Typography> : <CustomerTable customers={data?.data?.items || []} onDelete={handleDelete} />}
+      <AddCustomerDialog open={openAddDialog} onClose={() => setOpenAddDialog(false)} />
     </Box>
   );
 }
